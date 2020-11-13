@@ -640,6 +640,8 @@ input, select, textarea {
 		}
 
 /* Image */
+	a img { display:none; }
+	a:hover img { display:block; }
 
 	.image {
 		border-radius: 4px;
@@ -744,6 +746,14 @@ input, select, textarea {
 
 		ul li {
 			padding-left: 0.5em;
+		}
+
+		ul.two {
+			-webkit-columns: 60px 2;
+   		-moz-columns: 60px 2;
+    	columns: 60px 2;
+   		-moz-column-fill: auto;
+   		column-fill: auto;
 		}
 
 		ul.alt {
