@@ -670,18 +670,6 @@ input, select, textarea {
 			display: block;
 		}
 
-		.image.small {
-			max-width:75%;
-			margin: auto;
-			padding-top: 0.5em;
-			padding-bottom: 0.5em;
-			display: block;
-		}
-
-			.image.small img {
-				width: 100%;
-			}
-
 		.image.left, .image.right {
 			max-width: 40%;
 		}
