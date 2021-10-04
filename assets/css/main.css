@@ -419,7 +419,7 @@ input, select, textarea {
 			input[type="tel"]:invalid,
 			select:invalid,
 			textarea:invalid {
-				box-shadow: none;
+				box-shadow: 10px 10px 8px 10px #00000068;
 			}
 
 			input[type="text"]:focus,
@@ -430,7 +430,7 @@ input, select, textarea {
 			textarea:focus {
 				background: rgba(255, 255, 255, 0.075);
 				border-color: #ffffff;
-				box-shadow: 0 0 0 1px #ffffff;
+				box-shadow: 10px 10px 10px 6px #00000068;
 			}
 
 		select {
@@ -644,10 +644,11 @@ input, select, textarea {
 	a:hover img { display:block; }
 
 	.image {
-		border-radius: 4px;
+		border-radius: 15px;
 		border: 0;
 		display: inline-block;
 		position: relative;
+		box-shadow: 10px 10px 15px 3px #00000048;
 	}
 
 		.image:before {
@@ -1126,6 +1127,7 @@ input, select, textarea {
 		-ms-transform: scale(1.0);
 		transform: scale(1.0);
 		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -1563,6 +1565,7 @@ input, select, textarea {
 			background-color: rgba(27, 31, 34, 0.85);
 			border-radius: 20px;
 			opacity: 0;
+			box-shadow: 10px 10px 10px 6px #00000048;
 		}
 
 			#main article.active {
@@ -1575,7 +1578,7 @@ input, select, textarea {
 
 			#main article .close {
 				display: block;
-				position: absolute;
+				position: left;
 				top: 0;
 				right: 0;
 				width: 4rem;
@@ -1600,13 +1603,13 @@ input, select, textarea {
 					height: 2.5rem;
 					border-radius: 100%;
 					background-position: center;
-					background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='20px' height='20px' viewBox='0 0 20 20' zoomAndPan='disable'%3E%3Cstyle%3Eline %7B stroke: %23ffffff%3B stroke-width: 1%3B %7D%3C/style%3E%3Cline x1='2' y1='2' x2='18' y2='18' /%3E%3Cline x1='18' y1='2' x2='2' y2='18' /%3E%3C/svg%3E");
+					background-image: url("../../images/circle.png");
 					background-size: 20px 20px;
 					background-repeat: no-repeat;
 				}
 
 				#main article .close:hover:before {
-					background-color: rgba(255, 255, 255, 0.075);
+					background-image: url("../../images/hover.png");
 				}
 
 				#main article .close:active:before {
