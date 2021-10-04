@@ -653,9 +653,6 @@ input, select, textarea {
 
 		.image:before {
 			pointer-events: none;
-			background-image: url("../../images/overlay.png");
-			background-color: rgba(19, 21, 25, 0.5);
-			border-radius: 15px;
 			content: '';
 			display: block;
 			height: 100%;
@@ -709,6 +706,20 @@ input, select, textarea {
 
 			.image.main img {
 				width: 100%;
+			}
+
+		.image.png {
+			display: block;
+			margin: 0.5rem 0;
+			margin-left: auto;
+			margin-right: auto;
+			width: 50%;
+			box-shadow: 0px 0px 0px 0px #00000000;
+		}
+
+			.image.png img {
+				width: 100%;
+				background: none;
 			}
 
 		@media screen and (max-width: 736px) {
