@@ -704,15 +704,37 @@
 							<!-- Experience -->
 							<article id="experience">
 								<h2 class="major">My Work Experience</h2>
-								<h6>&nbsp&nbsp</h6>
+								<p class="h7">&nbsp</p>
 
 								<h3>JobAdder</h3>
 								<span class="image png"><img src="images/jobadder_logo.png" alt="JobAdder logo" /></span>
-								<h6>&nbsp&nbsp</h6>
+								<p class="h7">&nbsp</p>
 
-								<h4>Associate Cloud DevSecOps Engineer</h4>
-								<h6>Sep '24 - Now</h6>
-								<p>Ongoing position at JobAdder, developing security and operations solutions as an Associate Cloud DevSecOps Engineer.</p>
+								<h4>Cloud DevSecOps Engineer</h4>
+								<h6>Sep '24 - Nov '25</h6>
+								<p>Cloud DevSecOps Engineer at JobAdder, developing security and operations solutions as an Associate Cloud DevSecOps Engineer.</p>
+								
+								<ul>
+									<li>Designed and implemented a CDK-based organisation-wide GitHub OIDC solution for AWS, replacing insecure static admin credentials in GitHub secrets with secure, short-lived, minimally scoped authentication. 
+										<p class="h7">&nbsp</p>
+										Developed an opinionated, centralised hub repository that enforced a secure, standardised pattern for OIDC role creation organisation-wide. 
+										<p class="h7">&nbsp</p>
+										Integrated a cloud-team approval workflow to ensure governance, while enabling developers to easily and safely provision repository-specific roles with consistent visibility and compliance.</li>
+										<p class="h7">&nbsp</p>
+									<li>Designed, tested, and deployed a secure AWS permissions boundary via CDK with recursive enforcement to ensure all roles created by bounded roles automatically inherit the same boundary and cannot remove it, eliminating privilege escalation risks. 
+										<p class="h7">&nbsp</p>
+										Integrated the boundary into the GitHub OIDC role pipeline with a simple configuration flag, transitioning its default from false to true on a set date to drive timely adoption across teams.</li>
+										<p class="h7">&nbsp</p>
+									<li>Engineered and automated AWS Security Hub deployment across ~35 accounts and 16 regions spanning two AWS Organisations.
+										<p class="h7">&nbsp</p>
+										Leveraged AWS CDK to build a scalable, repeatable rollout process despite standard Organisations limitations, and designed a centralised delegation account to automatically collate findings for all accounts—providing secure, organisation-wide developer visibility into security posture.</li>
+										<p class="h7">&nbsp</p>
+									<li>Built a Cloudflare routing and deployment system that enabled controlled, zero-downtime migration of users from legacy to a new platform. 
+										<p class="h7">&nbsp</p>
+										Developed a robust CI/CD pipeline with automated error checking and multi-environment deployment to ensure safe, testable, and fault-tolerant rollouts.</li>
+										<p class="h7">&nbsp</p>
+									<li>Reigning champion in company-wide quizzes held weekly (I just type faster than everyone tbh)</li>
+								</ul>
 
 								<h6>&nbsp&nbsp</h6>
 
@@ -1096,7 +1118,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 						&nbsp&nbsp&nbsp&nbsp
 						<a href="https://github.com/lawrence0arabia" target="_blank" rel="noreferrer" class="github"><i class="fa-brands fa-github"></i></a>
 						&nbsp&nbsp&nbsp&nbsp
-						<a href="https://www.linkedin.com/in/ryan-allan-lawrence/" target="_blank" rel="noreferrer" class="linkedin"><i class="fa-brands fa-linkedin"></i></a>
+						<a href="https://www.linkedin.com/in/ryanigans/" target="_blank" rel="noreferrer" class="linkedin"><i class="fa-brands fa-linkedin"></i></a>
 						<!-- &nbsp&nbsp&nbsp&nbsp
 						<a href="https://discord.gg/prN7Aqp" target="_blank" rel="noreferrer" class="discord"><i class="fab fa-discord"></i></a> -->
 						&nbsp&nbsp&nbsp&nbsp
