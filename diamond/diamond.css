@@ -170,7 +170,7 @@ h2 {
     color: #a0b0af; /* Matches your H2 color */
     text-decoration: none;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.80rem;
     transition: all 0.3s ease;
     backdrop-filter: blur(5px);
 }
