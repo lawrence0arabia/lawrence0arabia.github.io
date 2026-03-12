@@ -1,0 +1,267 @@
+:root {
+    --diamond-blue: #64d1cb;
+    --dark-accent: #1a2a29;
+    --bg-x: 50%;
+    --bg-y: 50%;
+}
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-accent);
+    color: white;
+    overflow-x: hidden;
+}
+
+/* The actual Frosted Glass Card */
+.glass-card {
+    width: 100%;
+    max-width: 1000px;
+    background: rgba(255, 255, 255, 0.03); /* Tiny bit of white for the "frost" */
+    backdrop-filter: blur(25px) saturate(160%);
+    -webkit-backdrop-filter: blur(25px) saturate(160%);
+    border-radius: 32px; /* Large, modern rounded corners */
+    border: 1px solid rgba(100, 209, 203, 0.15); /* Diamond blue tinted border */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden; /* Keeps content inside the rounded edges */
+    padding: 60px 40px 80px 40px; /* Added 80px to the bottom */
+}
+
+h1 {
+    color: var(--diamond-blue) !important;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
+    font-size: xx-large;
+    line-height: 0.7;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
+    color:#a0b0af;
+    font-size: medium;
+}
+
+/* Ensure the main container doesn't have a solid background that hides the glow */
+.main-container {
+    position: relative;
+    z-index: 1;
+    background: transparent; /* Must be transparent! */
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 60px 20px 100px 20px; /* Increased top/bottom padding */
+    align-items: flex-start; /* Changed from center to prevent clipping on short screens */}
+
+#interactive-bg {
+    position: fixed;
+    top: -50%; 
+    left: -50%;
+    width: 200vw;
+    height: 200vh;
+    z-index: 0; /* Sits just above the body background */
+    pointer-events: none; 
+    background: radial-gradient(
+        circle at var(--bg-x) var(--bg-y), 
+        rgba(100, 209, 203, 0.4) 0%, 
+        rgba(100, 209, 203, 0.1) 40%,
+        var(--dark-accent) 150% 
+    );
+    animation: breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    75% { opacity: 1; transform: scale(1.05); }
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px 20px 20px;
+    text-align: center;
+}
+
+.floating-icon {
+    width: 40%;
+    height: 40%;
+    margin-bottom: 20px;
+    
+    /* Use the variables provided by JS. We add a base 15px to Y so it stays "below" */
+    filter: drop-shadow(
+        var(--shadow-x) 
+        calc(var(--shadow-y) + 15px) 
+        20px 
+        rgba(0, 0, 0, 0.315)
+    );
+    
+    animation: float 4s ease-in-out infinite;
+    /* Transition ensures the shadow doesn't "snap" if the JS hitchs */
+    transition: filter 0.1s linear; 
+}
+
+/* Remove the filter from the @keyframes float so they don't fight the JS */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+.screenshots {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 40px 60px 40px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.2); 
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    
+    /* Smooth transition for all properties */
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                box-shadow 0.4s ease, 
+                border-color 0.4s ease;
+    
+    /* cursor: pointer; */
+    position: relative;
+    z-index: 1; /* Base layer */
+}
+
+.card img {
+    max-width: 260px; 
+    border-radius: 8px;
+    display: block;
+    /* Keeps image sharp during scaling */
+    backface-visibility: hidden; 
+}
+
+/* The Hover Effect */
+.card:hover {
+    /* Scale it up by 5% */
+    transform: scale(1.05); 
+    
+    /* Bring it to the front so it doesn't overlap weirdly */
+    z-index: 10; 
+    
+    /* Highlight the border with your Diamond Blue */
+    border-color: rgba(100, 209, 203, 0.6);
+    
+    /* Add a glowing shadow that matches the background */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                0 0 20px rgba(100, 209, 203, 0.2);
+}
+
+
+.play-store-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 30px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.05); /* Very faint glass background */
+    border: 1px solid rgba(100, 209, 203, 0.3); /* Diamond blue border */
+    border-radius: 12px;
+    color: #a0b0af; /* Matches your H2 color */
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.play-store-btn svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    fill: currentColor; /* Makes the logo a silhouette of the text color */
+}
+
+.play-store-btn:hover {
+    background: rgba(100, 209, 203, 0.1);
+    color: var(--diamond-blue);
+    border-color: var(--diamond-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Adding a subtle glow that matches your background animation */
+.play-store-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.play-store-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* A tiny highlight that moves with the "breathe" animation */
+    background: linear-gradient(45deg, transparent, rgba(100, 209, 203, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.play-store-btn:hover::after {
+    transform: translateX(100%);
+}
+
+/* MOBILE: Switch to horizontal scrolling */
+@media (max-width: 768px) {
+    .glass-card {
+        padding: 40px 20px 60px 20px; /* Slightly tighter on mobile but still plenty of bottom space */
+    }
+
+    .screenshots {
+        flex-wrap: nowrap; /* Prevent stacking */
+        justify-content: flex-start; /* Start from the left */
+        overflow-x: auto; /* Enable horizontal scroll */
+        padding: 20px;
+        gap: 15px;
+        
+        /* Smooth snapping effect */
+        scroll-snap-type: x mandatory;
+        
+        /* Hide scrollbar for a cleaner look (optional) */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+        padding-bottom: 100px; 
+        margin-bottom: 1px;
+
+        -webkit-mask-image: linear-gradient(to right, 
+        transparent, 
+        black 5%, 
+        black 95%, 
+        transparent
+        );
+        mask-image: linear-gradient(to right, 
+            transparent, 
+            black 5%, 
+            black 95%, 
+            transparent
+        );
+    }
+
+    .screenshots::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    .card {
+        flex: 0 0 80%; /* Each card takes up 80% of the screen width */
+        scroll-snap-align: center; /* Snaps card to the middle of the screen */
+        max-width: none;
+    }
+
+    .card img {
+        width: 100%; /* Image fills the 80% card width */
+        max-width: none;
+        height: auto;
+    }
+}
