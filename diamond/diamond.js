@@ -12,12 +12,6 @@ window.addEventListener('mousemove', (e) => {
     targetY = (e.clientY / window.innerHeight) * 100;
 });
 
-window.addEventListener('deviceorientation', (e) => {
-    if (e.beta && e.gamma) {
-        targetX = ((e.gamma + 20) / 40) * 100;
-        targetY = ((e.beta + 20) / 40) * 100;
-    }
-});
 
 function animate() {
     currentX += (targetX - currentX) * ease;

@@ -264,4 +264,45 @@ h2 {
         max-width: none;
         height: auto;
     }
+
+    .floating-icon {
+        width: 60%;
+    }
+
+    #interactive-bg {
+        /* Slightly faster or more pronounced pulse for mobile */
+        animation: breathe 4s ease-in-out infinite;
+    }
+}
+
+.footer-links {
+    margin-top: 40px;
+    padding-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.footer-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(160, 176, 175, 0.6); /* Faded version of your H2 color */
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--diamond-blue);
+    text-decoration: underline;
+}
+
+/* Ensure the main container stacks items vertically */
+.main-container {
+    display: flex;
+    flex-direction: column; /* Stack card and footer */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px 20px;
+    box-sizing: border-box;
 }
