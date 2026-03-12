@@ -17,7 +17,7 @@ body, html {
 
 /* The actual Frosted Glass Card */
 .glass-card {
-    width: 90%;
+    width: 92.5%;
     max-width: 1000px;
     background: rgba(255, 255, 255, 0.03); /* Tiny bit of white for the "frost" */
     backdrop-filter: blur(25px) saturate(160%);
