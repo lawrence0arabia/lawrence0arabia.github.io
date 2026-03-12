@@ -17,7 +17,7 @@ body, html {
 
 /* The actual Frosted Glass Card */
 .glass-card {
-    width: 100%;
+    width: 90%;
     max-width: 1000px;
     background: rgba(255, 255, 255, 0.03); /* Tiny bit of white for the "frost" */
     backdrop-filter: blur(25px) saturate(160%);
@@ -26,7 +26,7 @@ body, html {
     border: 1px solid rgba(100, 209, 203, 0.15); /* Diamond blue tinted border */
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     overflow: hidden; /* Keeps content inside the rounded edges */
-    padding: 60px 40px 0px 40px; /* Added 80px to the bottom */
+    padding: 60px 40px 0px 40px;
 }
 
 h1 {
@@ -275,6 +275,20 @@ h2 {
         /* Slightly faster or more pronounced pulse for mobile */
         animation: breathe 4s ease-in-out infinite;
     }
+
+    .back-btn {
+        /* The Switch: Move it back into the document flow */
+        position: relative; 
+        top: 0;
+        left: 0;
+        
+        /* Add the space you want here */
+        margin-bottom: 30px; 
+        
+        /* Keep it aligned to the left side of the card width */
+        align-self: flex-start;
+        margin-left: 5%; /* Matches the gap created by your 90% width card */
+    }
 }
 
 .footer-links {
@@ -307,4 +321,43 @@ h2 {
     min-height: 100vh;
     padding: 60px 20px;
     box-sizing: border-box;
+}
+
+.back-btn {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: rgba(160, 176, 175, 0.7); /* Match your footer/H2 color */
+    transition: all 0.3s ease;
+    z-index: 100; /* Ensure it stays above the background glow */
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+}
+
+.back-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.back-btn:hover {
+    color: var(--diamond-blue);
+    background: rgba(100, 209, 203, 0.05);
+    border-color: rgba(100, 209, 203, 0.2);
+    transform: translateX(-4px); /* Subtle nudge to the left on hover */
+}
+
+/* Mobile Adjustment: Move it slightly closer to the edge */
+@media (max-width: 768px) {
+    .back-btn {
+        top: 20px;
+        left: 20px;
+    }
 }
