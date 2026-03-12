@@ -247,7 +247,7 @@ h2 {
 /* MOBILE: Switch to horizontal scrolling */
 @media (max-width: 768px) {
     .glass-card {
-        padding: 40px 20px 60px 20px; /* Slightly tighter on mobile but still plenty of bottom space */
+        padding: 40px 20px 0px 20px; 
     }
 
 
