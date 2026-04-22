@@ -1,6 +1,7 @@
 ---
-title: blog
-layout: '"list"'
+title: "Blog"
+layout: "list"
+type: "blog"
 ---
 
 my ryanigans
