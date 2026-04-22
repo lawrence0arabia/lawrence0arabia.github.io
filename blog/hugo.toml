@@ -1,4 +1,4 @@
 baseURL = "https://ryanigans.com/blog/"
 languageCode = 'en-us'
-title = 'my ryanigans'
+title = 'ryanigans'
 theme = "hextra"

@@ -1,8 +1,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>my ryanigans – Blog</title>
+    <title>ryanigans – blog</title>
     <link>http://localhost:1313/blog/</link>
-    <description>Recent content in Blog on my ryanigans</description>
+    <description>Recent content in blog on ryanigans</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 22 Apr 2026 00:00:00 +0000</lastBuildDate>
