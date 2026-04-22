@@ -1,6 +1,6 @@
 ---
 title: blog
-type: blog
+layout: '"list"'
 ---
 
 my ryanigans
