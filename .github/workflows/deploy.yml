@@ -10,7 +10,8 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  # 1. The Build Job: Compiles Hugo and prepares the static files
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,24 +27,32 @@ jobs:
           extended: true
 
       - name: Build Hugo Blog
-        # We run Hugo inside the blog folder
-        # We tell it to output the results to a temp folder
+        # Builds the blog into a subfolder of 'public'
         run: |
           cd blog
           hugo --destination ../public/blog --minify
 
       - name: Copy Hand-coded Files
-        # Move your root HTML/CSS into the same public folder
+        # Collects your manual HTML, CSS, and domain settings into the public root
         run: |
           cp index.html public/
           cp -r css/ public/ || true
           cp .nojekyll public/
+          cp CNAME public/ || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
+  # 2. The Deploy Job: Pushes the compiled folder to GitHub Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
