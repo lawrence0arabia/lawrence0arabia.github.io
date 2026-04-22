@@ -5,4 +5,4 @@ type: blog
 
 my ryanigans
 
-[take me back to the main site!](/)
+<a href="https://ryanigans.com">take me back to the main site!</a>
