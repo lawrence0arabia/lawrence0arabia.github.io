@@ -1,8 +1,7 @@
 ---
-title: "blog"
-layout: "list"  # Tells Hextra to show a list of posts here
+title: blog
+type: blog
 ---
 
-my ryanigans 
+my ryanigans
 
-[take me back.](https://ryanigans.com)
