@@ -1,4 +1,4 @@
 baseURL = "https://ryanigans.com/blog/"
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'my ryanigans'
 theme = "hextra"

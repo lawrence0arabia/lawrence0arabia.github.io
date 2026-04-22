@@ -1,6 +1,6 @@
 ---
-title: "Home"
-type: "docs" # This triggers the Hextra layout
+title: "Blog"
+layout: "list"  # Tells Hextra to show a list of posts here
 ---
 
-Welcome to my site. Check out the [Blog](/blog/)!
+Welcome to my site. 
