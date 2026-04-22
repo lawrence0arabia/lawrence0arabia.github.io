@@ -33,17 +33,17 @@ jobs:
           hugo --destination ../public/blog --minify
 
       - name: Copy Hand-coded Files
-              run: |
-                # 1. Copy the main HTML file
-                cp index.html public/
+        run: |
+          # 1. Copy the main HTML file
+          cp index.html public/
 
-                # 2. Copy the entire assets folder (contains css, js, sass)
-                # Using -r ensures all subdirectories are preserved
-                cp -r assets public/
+          # 2. Copy the entire assets folder (contains css, js, sass)
+          # Using -r ensures all subdirectories are preserved
+          cp -r assets public/
 
-                # 3. Copy essential GitHub/Domain files
-                cp .nojekyll public/
-                cp CNAME public/ || true
+          # 3. Copy essential GitHub/Domain files
+          cp .nojekyll public/
+          cp CNAME public/ || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
