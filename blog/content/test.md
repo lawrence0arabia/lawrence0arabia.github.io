@@ -7,6 +7,4 @@ summary: yo what up
 
 hello.
 
-TODO: hugo https://gohugo.io/ 
-
 testing
