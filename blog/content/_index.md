@@ -1,8 +1,8 @@
 ---
-title: blog
-type: blog
+title: "blog"
+type: "docs"
 ---
 
 my ryanigans
 
-<a href="https://ryanigans.com">take me back to the main site!</a>
+<a href="https://ryanigans.com">back to main site.</a>
