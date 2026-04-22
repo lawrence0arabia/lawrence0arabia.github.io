@@ -14,3 +14,5 @@ theme = "hextra"
   [params.sidebar]
     defaultOpen = true
     displayEmpty = false # Set to true if you want to see folders even if empty
+  [params.breadcrumb]
+    enable = false
