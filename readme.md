@@ -1,1 +1,1 @@
-Personal website of Ryan Lawrence, hosted at ryza.site
+Personal website of Ryan Lawrence, hosted at ryanigans.com

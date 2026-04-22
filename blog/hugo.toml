@@ -7,3 +7,10 @@ theme = "hextra"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[params]
+  [params.navbar]
+    displayTitle = true
+  [params.sidebar]
+    defaultOpen = true
+    displayEmpty = false # Set to true if you want to see folders even if empty
