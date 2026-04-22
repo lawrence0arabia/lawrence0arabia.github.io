@@ -2,3 +2,8 @@ baseURL = "https://ryanigans.com/blog/"
 languageCode = 'en-us'
 title = 'ryanigans'
 theme = "hextra"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
