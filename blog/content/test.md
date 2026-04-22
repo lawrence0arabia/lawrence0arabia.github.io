@@ -1,7 +1,7 @@
 ---
 title: just setting up my blg
 date: 2026-04-22
-type: "docs"
+draft: false
 summary: yo what up
 ---
 
