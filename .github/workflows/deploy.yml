@@ -36,10 +36,13 @@ jobs:
         run: |
           # 1. Copy the main HTML file
           cp index.html public/
+          cp diamond.html public/
+          cp readme.md
+          cp diamond-privacy.html
 
-          # 2. Copy the entire assets folder (contains css, js, sass)
-          # Using -r ensures all subdirectories are preserved
           cp -r assets public/
+          cp -r images public/
+          cp -r diamond public/
 
           # 3. Copy essential GitHub/Domain files
           cp .nojekyll public/
