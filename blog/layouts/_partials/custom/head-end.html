@@ -9,6 +9,25 @@ time[data-relative],
 .blog-last-updated time {
   text-transform: lowercase;
 }
+
+/* Sidebar links for posts published in the last 3 days — matching teal
+   accent to the "new post" glow already used on the main site's nav. */
+a[data-published].new-post-glow {
+  position: relative;
+  color: #64d1cb !important;
+  animation: sidebar-new-post-glow 2.4s ease-in-out infinite;
+}
+a[data-published].new-post-glow:hover {
+  background-color: rgba(100, 209, 203, 0.12) !important;
+}
+@keyframes sidebar-new-post-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(100, 209, 203, 0.35), inset 0 0 4px rgba(100, 209, 203, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(100, 209, 203, 0.8), inset 0 0 6px rgba(100, 209, 203, 0.3);
+  }
+}
 </style>
 <script>
 (function () {
@@ -25,6 +44,21 @@ time[data-relative],
     document.querySelectorAll("time[data-relative]").forEach(function (el) {
       var rel = relativeDate(el.getAttribute("datetime"));
       if (rel) el.textContent = rel;
+    });
+
+    // Glow sidebar links to posts published in the last 3 days. Recomputed
+    // fresh on every page load (not baked in at build time) so it stops
+    // glowing on its own after 3 days without needing a redeploy — same
+    // reasoning as the main site's nav-link glow.
+    var RECENCY_DAYS = 3;
+    var now = Date.now();
+    document.querySelectorAll("a[data-published]").forEach(function (el) {
+      var published = new Date(el.getAttribute("data-published"));
+      if (isNaN(published)) return;
+      var ageInDays = (now - published.getTime()) / 86400000;
+      if (ageInDays >= 0 && ageInDays <= RECENCY_DAYS) {
+        el.classList.add("new-post-glow");
+      }
     });
   });
 })();
