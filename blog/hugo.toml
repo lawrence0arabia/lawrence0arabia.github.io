@@ -10,6 +10,11 @@ theme = "hextra"
 
 [params]
   displayUpdatedDate = true
+  [params.rss]
+    # Hugo's default .Type for a page with no section (all our posts live
+    # directly under content/) is "page", not "" — the theme's RSS template
+    # filters on Type, so without this the feed silently has zero items.
+    sections = ["page"]
   [params.navbar]
     displayTitle = true
     [params.navbar.logo]

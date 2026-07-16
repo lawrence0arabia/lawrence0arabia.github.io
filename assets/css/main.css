@@ -1409,6 +1409,25 @@ input, select, textarea {
 						background-color: rgba(255, 255, 255, 0.175);
 					}
 
+					#header nav ul li a.has-recent-post {
+						position: relative;
+						color: #64d1cb;
+						animation: nav-recent-post-glow 2.4s ease-in-out infinite;
+					}
+
+					#header nav ul li a.has-recent-post:hover {
+						background-color: rgba(100, 209, 203, 0.12);
+					}
+
+					@keyframes nav-recent-post-glow {
+						0%, 100% {
+							box-shadow: 0 0 6px rgba(100, 209, 203, 0.35), inset 0 0 6px rgba(100, 209, 203, 0.15);
+						}
+						50% {
+							box-shadow: 0 0 16px rgba(100, 209, 203, 0.9), inset 0 0 10px rgba(100, 209, 203, 0.35);
+						}
+					}
+
 		#header nav.use-middle:after {
 			content: '';
 			display: block;
