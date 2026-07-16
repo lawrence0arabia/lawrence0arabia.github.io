@@ -13,7 +13,7 @@ theme = "hextra"
   [params.navbar]
     displayTitle = true
     [params.navbar.logo]
-      path = "apple-touch-icon.png"
+      path = "android-chrome-192x192.png"
   [params.sidebar]
     defaultOpen = true
     displayEmpty = false # Set to true if you want to see folders even if empty
