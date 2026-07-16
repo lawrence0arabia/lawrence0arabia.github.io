@@ -6,8 +6,4 @@ summary: yo what up
 lastmod: 2026-07-16
 ---
 
-hello.
-
-testing
-
-test
+hello! welcome to my blg. i'm going to sell an nft of this blg post in 15 years for 1.5 million dollars
