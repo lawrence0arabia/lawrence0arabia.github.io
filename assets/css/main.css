@@ -1428,6 +1428,38 @@ input, select, textarea {
 						}
 					}
 
+					/* "New Post" swap-in on hover, only while glowing. The hover label
+					   stays hidden entirely in the normal state so plain "Blog" behaves
+					   exactly as before. Both labels are absolutely positioned once
+					   glowing so neither contributes to the link's width — crossfading
+					   between them can't shift the nav bar's layout. */
+					#header nav ul li a .nav-label-hover {
+						display: none;
+					}
+
+					#header nav ul li a.has-recent-post .nav-label-default,
+					#header nav ul li a.has-recent-post .nav-label-hover {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						position: absolute;
+						inset: 0;
+						white-space: nowrap;
+						transition: opacity 0.35s ease;
+					}
+
+					#header nav ul li a.has-recent-post .nav-label-hover {
+						opacity: 0;
+					}
+
+					#header nav ul li a.has-recent-post:hover .nav-label-default {
+						opacity: 0;
+					}
+
+					#header nav ul li a.has-recent-post:hover .nav-label-hover {
+						opacity: 1;
+					}
+
 		#header nav.use-middle:after {
 			content: '';
 			display: block;
