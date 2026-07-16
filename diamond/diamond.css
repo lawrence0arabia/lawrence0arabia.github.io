@@ -17,7 +17,15 @@ body, html {
 
 /* The actual Frosted Glass Card */
 .glass-card {
-    width: 92.5%;
+    /* border-box so `width` below is the actual rendered size — with the
+       default content-box, this element's own 40px side padding was adding
+       on top of the width%, making the side margins impossible to reason
+       about (or match against the top/bottom gap) directly. */
+    box-sizing: border-box;
+    /* Narrower than it looks like it "should" be — the back-button and
+       footer stack above/below outside this element, so matching visual
+       whitespace on all four sides needs real side margin, not just 92.5%. */
+    width: 83%;
     max-width: 1000px;
     background: rgba(255, 255, 255, 0.03); /* Tiny bit of white for the "frost" */
     backdrop-filter: blur(25px) saturate(160%);
@@ -26,7 +34,7 @@ body, html {
     border: 1px solid rgba(100, 209, 203, 0.15); /* Diamond blue tinted border */
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     overflow: hidden; /* Keeps content inside the rounded edges */
-    padding: 60px 40px 0px 40px;
+    padding: 4vh 40px 0px 40px;
 }
 
 h1 {
@@ -35,6 +43,7 @@ h1 {
     letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
     font-size: xx-large;
     line-height: 0.7;
+    margin-top: 8px;
     margin-bottom: 0;
 }
 
@@ -43,6 +52,7 @@ h2 {
     letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
     color:#a0b0af;
     font-size: medium;
+    margin: 8px 0;
 }
 
 /* Ensure the main container doesn't have a solid background that hides the glow */
@@ -82,15 +92,21 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 60px 20px 20px 20px;
+    padding: 4vh 20px 1vh 20px;
     text-align: center;
 }
 
+.hero p {
+    margin: 4px 0;
+}
+
 .floating-icon {
-    width: 40%;
-    height: 40%;
-    margin-bottom: 20px;
-    
+    /* Sized off viewport height (not width) so it shrinks on short desktop
+       screens instead of forcing the glass card taller than the viewport. */
+    width: clamp(90px, 16vh, 220px);
+    height: auto;
+    margin-bottom: 1.5vh;
+
     /* Use the variables provided by JS. We add a base 15px to Y so it stays "below" */
     filter: drop-shadow(
         var(--shadow-x) 
@@ -114,7 +130,7 @@ h2 {
     display: flex;
     justify-content: center;
     gap: 20px;
-    padding: 20px 40px 60px 40px;
+    padding: 1.5vh 40px 2vh 40px;
     flex-wrap: wrap;
 }
 
@@ -135,7 +151,14 @@ h2 {
 }
 
 .card img {
+    /* Both caps apply at once — the browser scales to whichever is smaller,
+       preserving aspect ratio. max-width governs the normal desktop look;
+       max-height takes over on short viewports so the card (and thus the
+       whole glass panel) shrinks to fit instead of forcing page scroll. */
     max-width: 208px;
+    max-height: 30vh;
+    width: auto;
+    height: auto;
     border-radius: 8px;
     display: block;
     backface-visibility: hidden;
@@ -163,8 +186,8 @@ h2 {
 .play-store-btn {
     display: inline-flex;
     align-items: center;
-    margin-top: 30px;
-    padding: 12px 24px;
+    margin-top: 1.5vh;
+    padding: 10px 24px;
     background: rgba(255, 255, 255, 0.05); /* Very faint glass background */
     border: 1px solid rgba(100, 209, 203, 0.3); /* Diamond blue border */
     border-radius: 12px;
@@ -218,16 +241,21 @@ h2 {
     flex-wrap: nowrap; /* Prevent stacking */
     justify-content: flex-start; /* Start from the left */
     overflow-x: auto; /* Enable horizontal scroll */
-    padding: 20px;
+    padding: 1.5vh 20px;
     gap: 15px;
-    
+
     /* Smooth snapping effect */
     scroll-snap-type: x mandatory;
-    
+
     /* Hide scrollbar for a cleaner look (optional) */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
-    padding-bottom: 100px; 
+    /* Was 100px — a leftover from the old scroll-snap carousel's "peek"
+       spacing. Snapping is disabled further down (scroll-snap-type: none),
+       so this only needs to cover the hover scale(1.05) growth now, same
+       as the top padding below. The old value was most of why this panel
+       didn't fit on screen without scrolling. */
+    padding-bottom: 2vh;
     margin-bottom: 1px;
 
     -webkit-mask-image: linear-gradient(to right, 
@@ -255,9 +283,14 @@ h2 {
         margin-bottom: 8px;
     }
 
-    /* Glass card fills the viewport; centers hero+carousel as a group */
+    /* Glass card fills the viewport; centers hero+carousel as a group.
+       Width/max-width reset back to full-bleed — the desktop rule's 83%
+       side-margin treatment is a desktop-only balancing act and would
+       otherwise carry through and needlessly narrow the card on phones. */
     .glass-card {
         flex: 1;
+        width: 100%;
+        max-width: none;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -333,8 +366,8 @@ h2 {
 }
 
 .footer-links {
-    margin-top: 40px;
-    padding-bottom: 20px;
+    margin-top: 2vh;
+    padding-bottom: 10px;
     text-align: center;
     width: 100%;
 }
@@ -367,13 +400,13 @@ h2 {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 30px 20px;
+    padding: 1.5vh 20px;
     box-sizing: border-box;
 }
 
 .back-btn {
     align-self: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -406,7 +439,7 @@ h2 {
     scroll-snap-type: none;
     scroll-behavior: auto;
     /* Extra top padding so scale(1.05) hover doesn't clip at the carousel's top edge */
-    padding-top: 40px;
+    padding-top: 3vh;
 }
 
 .screenshots:active {
