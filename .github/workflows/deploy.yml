@@ -45,7 +45,6 @@ jobs:
           cp -r diamond public/
 
           # 3. Copy essential GitHub/Domain files
-          cp .nojekyll public/
           cp CNAME public/ || true
 
       - name: Upload artifact
