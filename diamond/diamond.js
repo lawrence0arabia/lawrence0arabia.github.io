@@ -39,24 +39,37 @@ animate();
   const carousel = document.querySelector('.screenshots');
   if (!carousel) return;
 
-  // Clone all cards to create the infinite loop
-  Array.from(carousel.querySelectorAll('.card')).forEach(card => {
+  const originalCards = Array.from(carousel.querySelectorAll('.card'));
+  if (originalCards.length === 0) return;
+
+  // Clone the cards on BOTH sides of the originals. A trailing clone set alone
+  // only makes rightward scrolling infinite — there's nothing before index 0
+  // to reveal, so leftward scrolling hits the native scrollLeft:0 floor and
+  // "hits a wall". A leading clone set gives room to scroll left into as well.
+  const afterClones = originalCards.map(card => {
     const clone = card.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
     carousel.appendChild(clone);
+    return clone;
   });
+  const beforeClones = originalCards.map(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    return clone;
+  });
+  beforeClones.forEach(clone => carousel.insertBefore(clone, originalCards[0]));
 
-  // offsetLeft is relative to the nearest *positioned* ancestor (.main-container),
-  // not the carousel, so it includes unrelated offsets. Use getBoundingClientRect()
-  // to get the clone's position in viewport space, then convert to scroll-space.
+  // Width of one full set of cards (gap included), measured as the distance
+  // between the start of the original set and the start of the after-clone
+  // set. This is scroll-offset independent since both move together as the
+  // carousel scrolls, so no scrollLeft/padding correction is needed.
   function loopWidth() {
-    const firstClone = carousel.querySelector('[aria-hidden]');
-    if (!firstClone) return Math.floor(carousel.scrollWidth / 2);
-    const pl = parseFloat(getComputedStyle(carousel).paddingLeft) || 0;
-    const cloneLeft   = firstClone.getBoundingClientRect().left;
-    const carouselLeft = carousel.getBoundingClientRect().left;
-    return Math.round(cloneLeft - carouselLeft + carousel.scrollLeft - pl);
+    return Math.round(afterClones[0].getBoundingClientRect().left - originalCards[0].getBoundingClientRect().left);
   }
+
+  // Rest on the real (original) set, with a full loop's worth of cloned
+  // content on either side to scroll into before a wrap is needed.
+  carousel.scrollLeft = loopWidth();
 
   // --- AUTO-SCROLL ---
   // mouseOver: indefinite hold while cursor is inside; paused: timed hold after interaction
@@ -117,8 +130,8 @@ animate();
     if (Math.abs(delta) > 4) moved = true;
     carousel.scrollLeft = dragScrollStart - delta;
     const lw = loopWidth();
-    if (carousel.scrollLeft >= lw) carousel.scrollLeft -= lw;
-    if (carousel.scrollLeft < 0) carousel.scrollLeft += lw;
+    if (carousel.scrollLeft >= lw * 2) carousel.scrollLeft -= lw;
+    if (carousel.scrollLeft <= 0) carousel.scrollLeft += lw;
   });
 
   window.addEventListener('mouseup', () => {
@@ -135,12 +148,12 @@ animate();
     // wheel/touch scrolls past the boundary without a separate scroll
     // listener that can race with the tick and cause a visible hitch.
     if (!dragging) {
-      if (carousel.scrollLeft >= lw) carousel.scrollLeft -= lw;
-      else if (carousel.scrollLeft < 0) carousel.scrollLeft += lw;
+      if (carousel.scrollLeft >= lw * 2) carousel.scrollLeft -= lw;
+      else if (carousel.scrollLeft <= 0) carousel.scrollLeft += lw;
     }
     if (started && lastTs && !dragging && !paused && !mouseOver) {
       carousel.scrollLeft += SPEED * (ts - lastTs) / 1000;
-      if (carousel.scrollLeft >= lw) carousel.scrollLeft -= lw;
+      if (carousel.scrollLeft >= lw * 2) carousel.scrollLeft -= lw;
     }
     lastTs = ts;
     requestAnimationFrame(tick);
