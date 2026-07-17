@@ -67,6 +67,26 @@ animate();
     return Math.round(afterClones[0].getBoundingClientRect().left - originalCards[0].getBoundingClientRect().left);
   }
 
+  // The wrap logic below rests on scrollLeft = lw and treats [0, 2*lw] as the
+  // safe operating range. That range is only reachable if the carousel's
+  // native scroll extent (scrollWidth - clientWidth) actually covers it —
+  // otherwise the browser silently clamps scrollLeft short of 2*lw and
+  // autoplay stalls dead with no error: the tick loop keeps adding to
+  // scrollLeft every frame, but the clamp means it never actually moves.
+  // This can happen whenever the viewport is wide relative to the
+  // (responsively-sized) card set, so keep adding clone sets on both sides
+  // until there's room.
+  let safety = 0;
+  while (carousel.scrollWidth - carousel.clientWidth < loopWidth() * 2 + 50 && safety < 20) {
+    // Anchor captured once per batch, not re-read per card — insertBefore
+    // against a moving "current first child" would reverse each batch's
+    // card order instead of preserving it.
+    const anchor = carousel.firstElementChild;
+    originalCards.forEach(card => carousel.appendChild(card.cloneNode(true)));
+    originalCards.forEach(card => carousel.insertBefore(card.cloneNode(true), anchor));
+    safety++;
+  }
+
   // Rest on the real (original) set, with a full loop's worth of cloned
   // content on either side to scroll into before a wrap is needed.
   carousel.scrollLeft = loopWidth();
@@ -78,35 +98,8 @@ animate();
   let pauseTimer = null;
   let lastTs = 0;
   let started = false;
-  let currentSpeed = 0;
-  // S-curve transition state: currentSpeed glides from speedFrom to speedTo
-  // over speedTransitionDuration, following an easing curve with zero
-  // velocity AND zero acceleration at both ends — so it starts almost
-  // imperceptibly, picks up through the middle, then settles in gently,
-  // rather than snapping into motion or decelerating like a car braking.
-  let speedFrom = 0;
-  let speedTo = 0;
-  let speedTransitionStart = 0;
-  let speedTransitionDuration = 0;
-  const SPEED = 40; // px/sec, cruising speed once fully ramped up
-  const RAMP_DURATION = 2200; // ms for a full 0 -> SPEED (or SPEED -> 0) transition
+  const SPEED = 40; // px/sec, constant — no ramp up/down
   const RESUME_DELAY = 3000; // ms before resuming after wheel/touch/drag
-
-  // Smootherstep: zero 1st AND 2nd derivative at t=0 and t=1, for a curve
-  // that ramps up from and back down to a true standstill, not just a lerp.
-  function easeInOutCurve(t) {
-    return t * t * t * (t * (t * 6 - 15) + 10);
-  }
-
-  // Cuts the current speed to zero instantly, bypassing the S-curve — used
-  // when the user takes direct manual control (drag/wheel/touch), where any
-  // lingering auto-scroll motion would fight with their input.
-  function stopImmediately() {
-    currentSpeed = 0;
-    speedFrom = 0;
-    speedTo = 0;
-    speedTransitionDuration = 0;
-  }
 
   setTimeout(() => { started = true; }, 1500);
 
@@ -129,8 +122,8 @@ animate();
     pauseTemporarily();
   });
 
-  carousel.addEventListener('wheel', () => { stopImmediately(); pauseTemporarily(); }, { passive: true });
-  carousel.addEventListener('touchstart', () => { stopImmediately(); pauseTemporarily(); }, { passive: true });
+  carousel.addEventListener('wheel', pauseTemporarily, { passive: true });
+  carousel.addEventListener('touchstart', pauseTemporarily, { passive: true });
 
   // --- DRAG TO SCROLL ---
   let dragging = false;
@@ -148,7 +141,6 @@ animate();
     dragScrollStart = carousel.scrollLeft;
     carousel.style.cursor = 'grabbing';
     document.body.style.userSelect = 'none';
-    stopImmediately();
     pauseTemporarily();
   });
 
@@ -179,25 +171,8 @@ animate();
       if (carousel.scrollLeft >= lw * 2) carousel.scrollLeft -= lw;
       else if (carousel.scrollLeft <= 0) carousel.scrollLeft += lw;
     }
-    // Glide toward the target speed (SPEED once cruising, 0 while stopped/
-    // paused/dragging) along an S-curve instead of snapping, so starts and
-    // stops ease in and out smoothly rather than jumping to full speed.
-    const targetSpeed = (started && !dragging && !paused && !mouseOver) ? SPEED : 0;
-    if (targetSpeed !== speedTo) {
-      // Direction changed — start a fresh transition from wherever the
-      // speed currently is. Scale the duration to the remaining distance
-      // so a transition interrupted partway through doesn't restart at
-      // full RAMP_DURATION for what's now a much shorter distance to cover.
-      speedFrom = currentSpeed;
-      speedTo = targetSpeed;
-      speedTransitionDuration = RAMP_DURATION * (Math.abs(speedTo - speedFrom) / SPEED);
-      speedTransitionStart = ts;
-    }
-    const elapsed = ts - speedTransitionStart;
-    const t = speedTransitionDuration > 0 ? Math.min(1, elapsed / speedTransitionDuration) : 1;
-    currentSpeed = speedFrom + (speedTo - speedFrom) * easeInOutCurve(t);
-    if (lastTs && !dragging) {
-      carousel.scrollLeft += currentSpeed * (ts - lastTs) / 1000;
+    if (started && lastTs && !dragging && !paused && !mouseOver) {
+      carousel.scrollLeft += SPEED * (ts - lastTs) / 1000;
       if (carousel.scrollLeft >= lw * 2) carousel.scrollLeft -= lw;
     }
     lastTs = ts;
