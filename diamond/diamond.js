@@ -2,16 +2,17 @@
 const icon = document.querySelector('.floating-icon');
 const root = document.documentElement;
 
+// Checked once at load — matches the user's OS-level "reduce motion"
+// setting. Used here and in the carousel IIFE below to skip the two
+// JS-driven continuous animations (this parallax loop and carousel
+// autoplay); the CSS keyframe animations (breathe, float) have their own
+// matching @media (prefers-reduced-motion) block in diamond.css, since
+// those can be disabled from CSS alone.
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 let targetX = 50, targetY = 50;
 let currentX = 50, currentY = 50;
 const ease = 0.05;
-
-window.addEventListener('mousemove', (e) => {
-    // Calculate position as a percentage of the window
-    targetX = (e.clientX / window.innerWidth) * 100;
-    targetY = (e.clientY / window.innerHeight) * 100;
-});
-
 
 function animate() {
     currentX += (targetX - currentX) * ease;
@@ -32,7 +33,22 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-animate();
+if (prefersReducedMotion) {
+    // Static, centered values instead of the continuous mousemove-chasing
+    // loop — this parallax is decorative only, and WCAG 2.3.3 calls for
+    // autonomous/interaction-triggered motion like it to be avoidable.
+    // 0px here, not the usual formula's output for a centered mouse — the
+    // CSS itself adds its own +15px baseline on top of --shadow-y.
+    icon.style.setProperty('--shadow-x', '0px');
+    icon.style.setProperty('--shadow-y', '0px');
+} else {
+    window.addEventListener('mousemove', (e) => {
+        // Calculate position as a percentage of the window
+        targetX = (e.clientX / window.innerWidth) * 100;
+        targetY = (e.clientY / window.innerHeight) * 100;
+    });
+    animate();
+}
 
 // --- CAROUSEL ---
 (function () {
@@ -146,7 +162,13 @@ animate();
   const SPEED = 40; // px/sec, constant — no ramp up/down
   const RESUME_DELAY = 3000; // ms before resuming after wheel/touch/drag
 
-  setTimeout(() => { started = true; }, 1500);
+  // Autoplay never starts under reduced motion — `started` just stays
+  // false forever. Manual interaction (drag, wheel, click-to-lightbox) and
+  // the infinite-wrap logic in tick() below are unaffected: those aren't
+  // gated on `started`, only the automatic scroll increment is.
+  if (!prefersReducedMotion) {
+    setTimeout(() => { started = true; }, 1500);
+  }
 
   function pauseTemporarily() {
     paused = true;
