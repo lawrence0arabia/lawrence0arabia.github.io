@@ -42,19 +42,54 @@ animate();
   const originalCards = Array.from(carousel.querySelectorAll('.card'));
   if (originalCards.length === 0) return;
 
+  // Everything below measures card/image layout to decide how many clone
+  // sets are needed for the infinite-scroll wrap to have enough native
+  // scroll room (see loopWidth/the safety-loop further down). That decision
+  // is made once and never revisited, so it MUST run after the real <img>
+  // elements have their true decoded dimensions — not whatever placeholder
+  // size exists at the moment this synchronous script happens to execute.
+  // Blink and Gecko schedule image decode relative to script execution
+  // differently, so "measure now" can silently see different (wrong) sizes
+  // per engine — this doesn't depend on network latency at all, it
+  // reproduces identically over file:// with zero network involved.
+  const cardImages = originalCards.map(card => card.querySelector('img')).filter(Boolean);
+  const pending = cardImages.filter(img => !img.complete);
+  if (pending.length === 0) {
+    initCarousel();
+  } else {
+    let remaining = pending.length;
+    const onSettled = () => {
+      remaining--;
+      if (remaining <= 0) initCarousel();
+    };
+    // 'error' too — a broken image must not hang the carousel init forever.
+    pending.forEach(img => {
+      img.addEventListener('load', onSettled, { once: true });
+      img.addEventListener('error', onSettled, { once: true });
+    });
+  }
+
+  function initCarousel() {
   // Clone the cards on BOTH sides of the originals. A trailing clone set alone
   // only makes rightward scrolling infinite — there's nothing before index 0
   // to reveal, so leftward scrolling hits the native scrollLeft:0 floor and
   // "hits a wall". A leading clone set gives room to scroll left into as well.
+  // tabindex=-1 alongside aria-hidden: cloneNode copies the originals'
+  // tabindex=0 (added so cards are keyboard-openable), and a hidden-from-
+  // assistive-tech element that's still in the Tab order is a real trap for
+  // sighted keyboard users — they'd land on a "duplicate" with nothing to
+  // announce.
   const afterClones = originalCards.map(card => {
     const clone = card.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
+    clone.setAttribute('tabindex', '-1');
     carousel.appendChild(clone);
     return clone;
   });
   const beforeClones = originalCards.map(card => {
     const clone = card.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
+    clone.setAttribute('tabindex', '-1');
     return clone;
   });
   beforeClones.forEach(clone => carousel.insertBefore(clone, originalCards[0]));
@@ -82,8 +117,18 @@ animate();
     // against a moving "current first child" would reverse each batch's
     // card order instead of preserving it.
     const anchor = carousel.firstElementChild;
-    originalCards.forEach(card => carousel.appendChild(card.cloneNode(true)));
-    originalCards.forEach(card => carousel.insertBefore(card.cloneNode(true), anchor));
+    originalCards.forEach(card => {
+      const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute('tabindex', '-1');
+      carousel.appendChild(clone);
+    });
+    originalCards.forEach(card => {
+      const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute('tabindex', '-1');
+      carousel.insertBefore(clone, anchor);
+    });
     safety++;
   }
 
@@ -194,15 +239,28 @@ animate();
   const lbClose = overlay.querySelector('#lightbox-close');
   const lbBackdrop = overlay.querySelector('#lightbox-backdrop');
 
+  // Restores focus to whatever opened the lightbox (a clicked/activated
+  // card) once it closes, instead of leaving focus lost on a detached
+  // reference or dropped back to <body>.
+  let lastFocusedElement = null;
+
   function openLightbox(src) {
+    lastFocusedElement = document.activeElement;
     lbImg.src = src;
     overlay.classList.add('visible');
     document.body.style.overflow = 'hidden';
+    // Move focus INTO the modal — otherwise it stays wherever it was
+    // (often <body>), and the first Tab press goes to background page
+    // content still visible behind the overlay instead of anything in it.
+    lbClose.focus();
   }
 
   function closeLightbox() {
     overlay.classList.remove('visible');
     document.body.style.overflow = '';
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
+    }
   }
 
   carousel.addEventListener('click', (e) => {
@@ -211,9 +269,31 @@ animate();
     if (img) openLightbox(img.src);
   });
 
+  // Keyboard-openable: cards carry tabindex=0 (see diamond.html) precisely
+  // so this works — Enter/Space activates the focused card the same way a
+  // click does. Space also needs preventDefault, or the page scrolls too.
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const card = e.target.closest('.card');
+    if (!card || card.getAttribute('aria-hidden') === 'true') return;
+    e.preventDefault();
+    const img = card.querySelector('img');
+    if (img) openLightbox(img.src);
+  });
+
   lbClose.addEventListener('click', closeLightbox);
   lbBackdrop.addEventListener('click', closeLightbox);
-  document.addEventListener('keydown', () => {
-    if (overlay.classList.contains('visible')) closeLightbox();
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('visible')) return;
+    if (e.key === 'Escape') {
+      closeLightbox();
+    } else if (e.key === 'Tab') {
+      // The close button is the only focusable element in the modal, so
+      // trapping focus here just means Tab (or Shift+Tab) can't leave it —
+      // without this, Tab escapes to whatever's behind the overlay.
+      e.preventDefault();
+      lbClose.focus();
+    }
   });
+  } // end initCarousel
 })();

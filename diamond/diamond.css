@@ -43,7 +43,7 @@ h1 {
     letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
     font-size: xx-large;
     line-height: 0.7;
-    margin-top: 8px;
+    margin-top: 4px;
     margin-bottom: 0;
 }
 
@@ -52,7 +52,7 @@ h2 {
     letter-spacing: -0.02em; /* JetBrains Mono looks great slightly tightened */
     color:#a0b0af;
     font-size: medium;
-    margin: 8px 0;
+    margin: 4px 0;
 }
 
 /* Ensure the main container doesn't have a solid background that hides the glow */
@@ -97,13 +97,13 @@ h2 {
 }
 
 .hero p {
-    margin: 4px 0;
+    margin: 2px 0;
 }
 
 .floating-icon {
     /* Sized off viewport height (not width) so it shrinks on short desktop
        screens instead of forcing the glass card taller than the viewport. */
-    width: clamp(90px, 16vh, 220px);
+    width: clamp(60px, 16vh, 220px);
     height: auto;
     margin-bottom: 1.5vh;
 
@@ -132,6 +132,13 @@ h2 {
     gap: 20px;
     padding: 1.5vh 40px 2vh 40px;
     flex-wrap: wrap;
+    /* CSS Scroll Anchoring: Chrome silently nudges scrollLeft to compensate
+       whenever content inside a scroll container resizes (e.g. each <img>
+       growing from placeholder to decoded size as it loads over the network)
+       — it can't tell that from our own rAF-driven scrollLeft writes, so the
+       two fight and autoplay crawls. Firefox's anchoring heuristics don't
+       fight a JS-driven scrollLeft the same way, hence "works fine there". */
+    overflow-anchor: none;
 }
 
 .card {
@@ -187,7 +194,7 @@ h2 {
     display: inline-flex;
     align-items: center;
     margin-top: 1.5vh;
-    padding: 10px 24px;
+    padding: 8px 24px;
     background: rgba(255, 255, 255, 0.05); /* Very faint glass background */
     border: 1px solid rgba(100, 209, 203, 0.3); /* Diamond blue border */
     border-radius: 12px;
@@ -275,21 +282,24 @@ h2 {
 
 /* MOBILE */
 @media (max-width: 768px) {
-    .main-container {
-        padding: 12px 16px;
-    }
+    /* .main-container's mobile padding is set near the bottom of this file,
+       right after the unconditional rule it needs to override — see the
+       comment there for why it can't live here. */
 
     .back-btn {
         margin-bottom: 8px;
     }
 
-    /* Glass card fills the viewport; centers hero+carousel as a group.
-       Width/max-width reset back to full-bleed — the desktop rule's 83%
-       side-margin treatment is a desktop-only balancing act and would
-       otherwise carry through and needlessly narrow the card on phones. */
+    /* Glass card fills most of the viewport; centers hero+carousel as a group.
+       94% (not the desktop rule's 83%) since side-margin balancing is a
+       desktop-only concern and would otherwise needlessly narrow the card
+       on phones — but not literally 100% either: that made the jump at the
+       768px boundary unnecessarily large (728px -> 605px in testing). 94%
+       still reads as full-bleed on real phone widths (roughly a 11px margin
+       at 390px wide) while meaningfully softening that transition. */
     .glass-card {
         flex: 1;
-        width: 100%;
+        width: 94%;
         max-width: none;
         display: flex;
         flex-direction: column;
@@ -303,8 +313,14 @@ h2 {
         padding: 8px 12px 4px;
     }
 
+    /* Capped — at real phone widths (~280-430px) 38% gives a sensible
+       106-163px icon, but the mobile breakpoint runs all the way up to
+       768px width, where 38% balloons to ~292px, consuming far more
+       vertical space than intended and pushing the footer below the fold
+       on any window tall-but-narrow enough to land in that range (verified:
+       768x900 needed 56px of scroll before this cap). */
     .floating-icon {
-        width: 38%;
+        width: min(38%, 160px);
         margin-bottom: 8px;
     }
 
@@ -318,7 +334,15 @@ h2 {
 
     .play-store-btn {
         margin-top: 10px;
-        padding: 10px 18px;
+        padding: 10px 16px;
+        font-size: 0.72rem;
+        white-space: nowrap;
+    }
+
+    .play-store-btn svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
     }
 
     .screenshots::-webkit-scrollbar {
@@ -331,10 +355,30 @@ h2 {
        otherwise browsers fall back to the image's raw natural width
        when computing each .card's flex-basis, making cards way too wide. */
     .screenshots {
+        /* height is content-box (default box-sizing), so padding is added
+           ON TOP of this — it does NOT shrink the card, which still renders
+           at exactly 35vh. Padding below exists purely as headroom for the
+           hover-scale + shadow, sized from the ACTUAL measured box-shadow
+           extent (offsetY + blur, per layer) plus the ~1vh the 5% scale
+           itself adds each side — not guessed. See .card:hover below for
+           the shadow values this padding is sized against. */
         flex: 0 0 35vh;
         height: 35vh;
         min-height: 0;
-        padding: 8px 0 0;
+        padding: 4.5vh 0 7vh 0;
+        /* Still no scrolling, ever — this is just headroom for the hover
+           effect, not an invitation to scroll the carousel vertically. */
+        overflow-y: hidden;
+    }
+
+    /* Smaller, more symmetric shadow than desktop's — sized to actually fit
+       the padding above: layer 1 (offsetY 8, blur 16) reaches 24px below /
+       8px above the card's own edge; layer 2 (blur 10) reaches 10px both
+       ways. Combined: needs ~24px below, ~10px above, comfortably inside
+       the padding once the ~1vh scale-growth is subtracted from it. */
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+                    0 0 10px rgba(100, 209, 203, 0.25);
     }
 
     /* aspect-ratio lives on the flex item itself (not a descendant img) so the
@@ -360,9 +404,13 @@ h2 {
         object-fit: cover;
     }
 
-    #interactive-bg {
-        animation: breathe 4s ease-in-out infinite;
-    }
+    /* No mobile-specific animation-duration override here anymore — changing
+       animation-duration on a running animation makes the browser recompute
+       "how far through the cycle am I" using the NEW duration, which causes
+       a visible jump in the animation's state right at the breakpoint
+       (verified: opacity/scale jumped discontinuously on resize). One
+       consistent 8s duration (from the base #interactive-bg rule) removes
+       the discontinuity entirely rather than just softening it. */
 }
 
 .footer-links {
@@ -404,6 +452,17 @@ h2 {
     box-sizing: border-box;
 }
 
+/* This rule sits after the mobile-scoped one earlier in this file, so
+   without this override, mobile silently inherits 1.5vh/20px from the
+   unconditional rule above regardless of what the mobile block asks for —
+   same specificity, later wins. Same bug pattern as .screenshots'
+   padding-top, fixed the same way: restate mobile's intent here, last. */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 12px 16px;
+    }
+}
+
 .back-btn {
     align-self: flex-start;
     margin-bottom: 12px;
@@ -440,6 +499,17 @@ h2 {
     scroll-behavior: auto;
     /* Extra top padding so scale(1.05) hover doesn't clip at the carousel's top edge */
     padding-top: 3vh;
+}
+
+/* This rule sits after the (unconditional, desktop-oriented) one above in
+   source order, so without this override, mobile silently inherits 3vh
+   top padding regardless of what the mobile block earlier in this file
+   asks for — same specificity, later wins. Mobile needs its own value here
+   to actually fit its own (smaller, more symmetric) hover shadow. */
+@media (max-width: 768px) {
+    .screenshots {
+        padding-top: 4.5vh;
+    }
 }
 
 .screenshots:active {
